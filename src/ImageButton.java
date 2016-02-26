@@ -16,8 +16,9 @@ public class ImageButton {
 			JButton button = new JButton(new ImageIcon(buttonIcon));
 			button.setBorder(BorderFactory.createEmptyBorder());
 			button.setContentAreaFilled(false);
-
-		    button.setActionCommand("kill"); 
+			button.setBounds(0,0,100,100);
+			
+		    button.setActionCommand(action); 
 		    button.addActionListener(new ButtonClickListener()); 
 		    frame.add(button);
 		    
