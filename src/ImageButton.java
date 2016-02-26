@@ -12,14 +12,14 @@ import javax.swing.JFrame;
 
 public class ImageButton {
 
-	public ImageButton(JFrame frame, String name, String imagePath, int x, int y) {
+	public ImageButton(JFrame frame, String action, int x, int y, String imagePath) {
 		try{
 			BufferedImage buttonIcon = ImageIO.read(new File(imagePath));
 			JButton button = new JButton(new ImageIcon(buttonIcon));
 			button.setBorder(BorderFactory.createEmptyBorder());
 			button.setContentAreaFilled(false);
 
-		    button.setActionCommand(name); 
+		    button.setActionCommand(action); 
 		    button.addActionListener(new ButtonClickListener()); 
 		    frame.add(button);
 		}catch(Exception e){
@@ -29,7 +29,7 @@ public class ImageButton {
 	
 	private class ButtonClickListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
-			String command = e.getActionCommand();  
+			/*String command = e.getActionCommand();  
 			if( command.equals( "OK" ))  {
 				GUI.statusLabel.setText("Ok Button clicked.");
 			}
@@ -38,7 +38,7 @@ public class ImageButton {
 			}
 			else  {
 				statusLabel.setText("Cancel Button clicked.");
-			}  	
+			}  	*/
 		}		
 	}
 }

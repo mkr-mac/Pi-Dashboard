@@ -56,11 +56,8 @@ public class GUI {
 		JButton cancelButton = new JButton ("Cancel");
 		
 		okButton.setActionCommand("OK");
+		ImageButton submitButton = new ImageButton(frame, "", 0, 0, "title.png");
 	    cancelButton.setActionCommand("Cancel");
-	    
-	    okButton.addActionListener(new ButtonClickListener()); 
-	    submitButton.addActionListener(new ButtonClickListener()); 
-	    cancelButton.addActionListener(new ButtonClickListener());
 	    
 	    controlPanel.add(okButton);
 	    controlPanel.add(cancelButton);       
