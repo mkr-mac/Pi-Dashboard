@@ -1,5 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GUI {
@@ -13,15 +18,17 @@ public class GUI {
 		initialize();
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		GUI g = new GUI();
 		g.showEventDemo();
 	}
 
 	private void initialize() {
 		
-		frame = new JFrame("Example text");
-		frame.setSize(640, 400);
+		frame = new JFrame();
+		frame.setSize(800, 480);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setUndecorated(true);
 		frame.setLayout(new GridLayout(3,1));
 		
 		headerLabel = new JLabel("",JLabel.CENTER);
@@ -42,15 +49,13 @@ public class GUI {
 		frame.setVisible(true);
 	}
 	
-	private void showEventDemo(){
+	private void showEventDemo() {
 		headerLabel.setText("Control in action: Button");
-		
+
 		JButton okButton = new JButton("OK");
-		JButton submitButton = new JButton("Submit");
 		JButton cancelButton = new JButton ("Cancel");
 		
 		okButton.setActionCommand("OK");
-	    submitButton.setActionCommand("Submit");
 	    cancelButton.setActionCommand("Cancel");
 	    
 	    okButton.addActionListener(new ButtonClickListener()); 
@@ -58,24 +63,8 @@ public class GUI {
 	    cancelButton.addActionListener(new ButtonClickListener());
 	    
 	    controlPanel.add(okButton);
-	    controlPanel.add(submitButton);
 	    controlPanel.add(cancelButton);       
 
 	    frame.setVisible(true);  
-	}
-	
-	private class ButtonClickListener implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-			String command = e.getActionCommand();  
-			if( command.equals( "OK" ))  {
-				statusLabel.setText("Ok Button clicked.");
-			}
-			else if( command.equals( "Submit" ) )  {
-				statusLabel.setText("Submit Button clicked."); 
-			}
-			else  {
-				statusLabel.setText("Cancel Button clicked.");
-			}  	
-		}		
 	}
 }
