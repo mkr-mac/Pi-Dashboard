@@ -25,7 +25,7 @@ public class ImageButton {
 		    panel.add(button);
 		    
 		}catch(Exception e){
-			
+			System.out.println("Failed to create ImageButton.");
 		}
 	}
 	
