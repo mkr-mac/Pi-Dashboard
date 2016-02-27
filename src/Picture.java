@@ -1,6 +1,6 @@
+
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -10,12 +10,12 @@ import javax.swing.JPanel;
 
 public class Picture {
 	
-	public Picture(JPanel panel, int x, int y, int sizeX, int sizeY, String imagePath) {
+	public Picture(JPanel panel, int x, int y, String imagePath) {
 		try{
-			BufferedImage myPicture = ImageIO.read(new File(imagePath));
-			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+			BufferedImage image = ImageIO.read(new File(imagePath));
+			JLabel picLabel = new JLabel(new ImageIcon(image));
 	
-	        picLabel.setSize(sizeX, sizeY);
+	        picLabel.setSize(image.getWidth(), image.getHeight());
 			picLabel.setLocation(x, y);
 			panel.add(picLabel);
 			

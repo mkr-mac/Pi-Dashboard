@@ -48,8 +48,9 @@ public class GUI {
 		ImageButton button2 = new ImageButton(panel, "kill", 24, 204, "LargeButton.png");
 		ImageButton button3 = new ImageButton(panel, "kill", 24, 296, "LargeButton.png");
 
-		Picture clock = new Picture(panel, 395, 61, 358, 358, "Clock.png");
-		Picture background = new Picture(panel, 0, 0, 800, 480, "Background.png");
+		Picture minuteHand = new Picture(panel, 395, 61, "MinuteHand.png");
+		Picture clock = new Picture(panel, 395, 61, "Clock.png");
+		Picture background = new Picture(panel, 0, 0, "Background.png");
 		
 	    frame.setContentPane(panel);
 	    frame.setVisible(true);
