@@ -35,7 +35,8 @@ public class GUI {
 		mediaLine.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mediaLine.setUndecorated(true);
 		mediaLine.setAlwaysOnTop(true);
-		mediaLine.setLocationByPlatform( true );
+		mediaLine.setLocationByPlatform(true);
+        mediaLine.setBackground(new Color(1.0f,1.0f,1.0f,0.0f));
 		
 		panel = new JPanel();
         panel.setOpaque(true);
@@ -43,8 +44,7 @@ public class GUI {
         panel.setLayout(null);
 		
         mediaPanel = new JPanel();
-        mediaPanel.setOpaque(true);
-        mediaPanel.setBackground(Color.BLUE);
+        mediaPanel.setOpaque(false);
         mediaPanel.setLayout(null);
         
 		frame.addWindowListener(new WindowAdapter(){
@@ -69,5 +69,7 @@ public class GUI {
 		
 	    frame.setContentPane(panel);
 	    frame.setVisible(true);
+	    mediaLine.setContentPane(mediaPanel);
+	    mediaLine.setVisible(true);
 	}
 }
