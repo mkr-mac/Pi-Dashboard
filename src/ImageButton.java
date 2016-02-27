@@ -2,6 +2,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,7 +24,14 @@ public class ImageButton {
 	        button.setLocation(x, y);
 			
 		    button.setActionCommand(action); 
-		    button.addActionListener(new ButtonClickListener()); 
+		    button.addActionListener(new ButtonClickListener());
+		    /*
+			String soundName = "click.wav";    
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+			Clip clip = AudioSystem.getClip();
+			clip.open(audioInputStream);
+			clip.start();
+			*/
 		    panel.add(button);
 		    
 		}catch(Exception e){

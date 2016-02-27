@@ -57,6 +57,7 @@ public class GUI {
 	
 	private void addPanelContent() {
 
+		TextBox b1text = new TextBox(mediaPanel, "Media", 10, 0);
 		ImageButton button1 = new ImageButton(panel, "kill", 24, 112, "LargeButton.png");
 		ImageButton button2 = new ImageButton(panel, "kill", 24, 204, "LargeButton.png");
 		ImageButton button3 = new ImageButton(panel, "kill", 24, 296, "LargeButton.png");

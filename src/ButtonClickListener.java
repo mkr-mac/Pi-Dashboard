@@ -10,7 +10,7 @@ public class ButtonClickListener implements ActionListener{
 		String command = e.getActionCommand();  
 		if( command.equals( "kill" ))  {  
 			System.exit(0);
-		}else if( command.equals( "Submit" ) )  {
+		}else if( command.equals( "media" ) )  {
 		}
 		else  {
 		}
