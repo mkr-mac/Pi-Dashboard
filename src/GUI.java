@@ -10,7 +10,9 @@ import javax.swing.*;
 public class GUI {
 	
 	private JFrame frame;
+	private JFrame mediaLine;
 	private JPanel panel;
+	private JPanel mediaPanel;
 	
 	public GUI(){		
 		initialize();
@@ -18,7 +20,7 @@ public class GUI {
 
 	public static void main(String[] args) {
 		GUI g = new GUI();
-		g.showEventDemo();
+		g.addPanelContent();
 	}
 
 	private void initialize() {
@@ -28,11 +30,23 @@ public class GUI {
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setUndecorated(true);
 		
+		mediaLine = new JFrame();
+		mediaLine.setSize(800, 72);
+		mediaLine.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mediaLine.setUndecorated(true);
+		mediaLine.setAlwaysOnTop(true);
+		mediaLine.setLocationByPlatform( true );
+		
 		panel = new JPanel();
         panel.setOpaque(true);
         panel.setBackground(Color.BLUE);
         panel.setLayout(null);
 		
+        mediaPanel = new JPanel();
+        mediaPanel.setOpaque(true);
+        mediaPanel.setBackground(Color.BLUE);
+        mediaPanel.setLayout(null);
+        
 		frame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent windowEvent){
 				System.exit(0);
@@ -41,13 +55,14 @@ public class GUI {
 		frame.setVisible(true);
 	}
 	
-	private void showEventDemo() {
-		//headerLabel.setText("Control in action: Button");
+	private void addPanelContent() {
 
 		ImageButton button1 = new ImageButton(panel, "kill", 24, 112, "LargeButton.png");
 		ImageButton button2 = new ImageButton(panel, "kill", 24, 204, "LargeButton.png");
 		ImageButton button3 = new ImageButton(panel, "kill", 24, 296, "LargeButton.png");
 
+
+		Picture topLine = new Picture(mediaPanel, 0, 0, "TopLine.png");
 		Picture minuteHand = new Picture(panel, 395, 61, "MinuteHand.png");
 		Picture clock = new Picture(panel, 395, 61, "Clock.png");
 		Picture background = new Picture(panel, 0, 0, "Background.png");
