@@ -8,9 +8,10 @@ public class ButtonClickListener implements ActionListener{
 
 	public void actionPerformed(ActionEvent e) {
 		String command = e.getActionCommand();  
-		if( command.equals( "kill" ))  {  
+		if(command.equals("kill")) {  
 			System.exit(0);
-		}else if( command.equals( "media" ) )  {
+		}else if( command.equals("media")) {
+			System.exit(0);
 		}
 		else  {
 		}
