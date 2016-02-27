@@ -63,6 +63,7 @@ public class GUI {
 
 
 		Picture topLine = new Picture(mediaPanel, 0, 0, "TopLine.png");
+		Picture bottomLine = new Picture(mediaPanel, 0, 408, "BottomLine.png");
 		Picture minuteHand = new Picture(panel, 395, 61, "MinuteHand.png");
 		Picture clock = new Picture(panel, 395, 61, "Clock.png");
 		Picture background = new Picture(panel, 0, 0, "Background.png");
