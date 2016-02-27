@@ -5,22 +5,24 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 
 public class ImageButton {
 
-	public ImageButton(JFrame frame, String action, int x, int y, String imagePath) {
+	public ImageButton(JPanel panel, String action, int x, int y, String imagePath) {
 		try{
 			BufferedImage buttonIcon = ImageIO.read(new File(imagePath));
 			JButton button = new JButton(new ImageIcon(buttonIcon));
 			button.setBorder(BorderFactory.createEmptyBorder());
 			button.setContentAreaFilled(false);
-			button.setBounds(0,0,100,100);
+
+	        button.setSize(334, 79);
+	        button.setLocation(x, y);
 			
 		    button.setActionCommand(action); 
 		    button.addActionListener(new ButtonClickListener()); 
-		    frame.add(button);
+		    panel.add(button);
 		    
 		}catch(Exception e){
 			
