@@ -9,11 +9,14 @@ import javax.swing.JTextField;
 
 
 public class TextBox {
-	
+	JTextField textbox;
 	public TextBox(JPanel panel, String text, int x, int y){
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm");
-		Calendar cal = Calendar.getInstance();
-		JTextField textbox = new JTextField(dateFormat.format(cal.getTime()));
+		
+		if(text.equals("CURRENT_TIME")){
+			time();
+		}else{
+			textbox = new JTextField(text);
+		}
 		textbox.setBorder(BorderFactory.createEmptyBorder());
 		textbox.setOpaque(false);
 		textbox.setLocation(x, y);
@@ -21,5 +24,11 @@ public class TextBox {
 		textbox.setFont(new Font("Constantia", Font.BOLD, 60));
 		textbox.setEditable(false);
 		panel.add(textbox);
+	}
+	
+	private void time() {
+		DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+		Calendar cal = Calendar.getInstance();
+		textbox = new JTextField(dateFormat.format(cal.getTime()));
 	}
 }
