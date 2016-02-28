@@ -1,5 +1,4 @@
 import java.awt.Font;
-import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
