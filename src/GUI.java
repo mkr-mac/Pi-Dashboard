@@ -10,6 +10,18 @@ public class GUI {
 	private JPanel panel;
 	private JPanel mediaPanel;
 	
+	TextBox time;
+	TextBox date;
+	ImageButton button1;
+	ImageButton button2;
+	ImageButton button3;
+
+	Picture topLine;
+	Picture bottomLine;
+	Picture minuteHand;
+	Picture clock;
+	Picture background;
+	
 	public GUI(){		
 		initialize();
 	}
@@ -53,17 +65,18 @@ public class GUI {
 	
 	private void addPanelContent() {
 
-		TextBox time = new TextBox(mediaPanel, "CURRENT_TIME", 10, 0);
-		ImageButton button1 = new ImageButton(panel, "media", 24, 112, "MediaButton.png");
-		ImageButton button2 = new ImageButton(panel, "kill", 24, 204, "LargeButton.png");
-		ImageButton button3 = new ImageButton(panel, "kill", 24, 296, "LargeButton.png");
+		time = new TextBox(mediaPanel, "CURRENT_TIME", 660, 400);
+		date = new TextBox(mediaPanel, "CURRENT_DATE", 350, 420);
+		button1 = new ImageButton(panel, "media", 24, 112, "MediaButton.png");
+		button2 = new ImageButton(panel, "kill", 24, 204, "LargeButton.png");
+		button3 = new ImageButton(panel, "kill", 24, 296, "LargeButton.png");
 
 
-		Picture topLine = new Picture(mediaPanel, 0, 0, "TopLine.png");
-		Picture bottomLine = new Picture(mediaPanel, 0, 408, "BottomLine.png");
-		Picture minuteHand = new Picture(panel, 395, 61, "MinuteHand.png");
-		Picture clock = new Picture(panel, 395, 61, "Clock.png");
-		Picture background = new Picture(panel, 0, 0, "Background.png");
+		topLine = new Picture(mediaPanel, 0, 0, "TopLine.png");
+		bottomLine = new Picture(mediaPanel, 0, 408, "BottomLine.png");
+		minuteHand = new Picture(panel, 395, 61, "MinuteHand.png");
+		clock = new Picture(panel, 395, 61, "Clock.png");
+		background = new Picture(panel, 0, 0, "Background.png");
 		
 	    frame.setContentPane(panel);
 	    frame.setVisible(true);

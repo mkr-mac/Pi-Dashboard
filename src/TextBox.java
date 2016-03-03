@@ -13,7 +13,9 @@ public class TextBox {
 	public TextBox(JPanel panel, String text, int x, int y){
 		
 		if(text.equals("CURRENT_TIME")){
-			time();
+			textbox = time();
+		}else if(text.equals("CURRENT_DATE")){
+			textbox = date();
 		}else{
 			textbox = new JTextField(text);
 		}
@@ -26,9 +28,16 @@ public class TextBox {
 		panel.add(textbox);
 	}
 	
-	private void time() {
-		DateFormat dateFormat = new SimpleDateFormat("hh:mm");
+	private JTextField time() {
+		DateFormat dateFormat = new SimpleDateFormat("H:mm");
 		Calendar cal = Calendar.getInstance();
-		textbox = new JTextField(dateFormat.format(cal.getTime()));
+		
+		return( new JTextField(dateFormat.format(cal.getTime())) );
+	}
+	private JTextField date() {
+		DateFormat dateFormat = new SimpleDateFormat("M/d/yyyy");
+		Calendar cal = Calendar.getInstance();
+		
+		return( new JTextField(dateFormat.format(cal.getTime())) );
 	}
 }
