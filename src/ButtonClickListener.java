@@ -2,8 +2,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonClickListener implements ActionListener{
+	Sound music;
 	public ButtonClickListener() {
-		//Java says I need this
+		music = new Sound("");
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -11,7 +12,12 @@ public class ButtonClickListener implements ActionListener{
 		if(command.equals("kill")) {  
 			System.exit(0);
 		}else if( command.equals("media")) {
-			System.exit(0);
+			try{
+				music.clip.stop();
+			}catch(Exception ex){}
+			
+			music = new Sound("assets\\adagio.wav");
+
 		}
 		else  {
 		}
