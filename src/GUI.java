@@ -65,22 +65,22 @@ public class GUI {
 	
 	private void addPanelContent() {
 
-		time = new TextBox(mediaPanel, "CURRENT_TIME", 660, 400);
-		date = new TextBox(mediaPanel, "CURRENT_DATE", 350, 420);
+		time = new TextBox(panel, "CURRENT_TIME", 660, 400);
+		date = new TextBox(panel, "CURRENT_DATE", 350, 420);
 		button1 = new ImageButton(panel, "media", 24, 112, "MediaButton.png");
 		button2 = new ImageButton(panel, "kill", 24, 204, "LargeButton.png");
 		button3 = new ImageButton(panel, "kill", 24, 296, "LargeButton.png");
 
 
-		topLine = new Picture(mediaPanel, 0, 0, "TopLine.png");
-		bottomLine = new Picture(mediaPanel, 0, 408, "BottomLine.png");
+		topLine = new Picture(panel, 0, 0, "TopLine.png");
+		bottomLine = new Picture(panel, 0, 408, "BottomLine.png");
 		minuteHand = new Picture(panel, 395, 61, "MinuteHand.png");
 		clock = new Picture(panel, 395, 61, "Clock.png");
 		background = new Picture(panel, 0, 0, "Background.png");
 		
 	    frame.setContentPane(panel);
 	    frame.setVisible(true);
-	    mediaLine.setContentPane(mediaPanel);
-	    mediaLine.setVisible(true);
+	    //mediaLine.setContentPane(mediaPanel);
+	    //mediaLine.setVisible(true);
 	}
 }
