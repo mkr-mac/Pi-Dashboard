@@ -12,7 +12,7 @@ public class ImageButton {
 
 	public ImageButton(JPanel panel, String action, int x, int y, String imagePath) {
 		try{
-			BufferedImage buttonIcon = ImageIO.read(new File(imagePath));
+			java.net.URL buttonIcon = getClass().getResource(imagePath);
 			JButton button = new JButton(new ImageIcon(buttonIcon));
 			button.setBorder(BorderFactory.createEmptyBorder());
 			button.setContentAreaFilled(false);

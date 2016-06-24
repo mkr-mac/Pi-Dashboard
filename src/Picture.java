@@ -12,10 +12,11 @@ public class Picture {
 	
 	public Picture(JPanel panel, int x, int y, String imagePath) {
 		try{
-			BufferedImage image = ImageIO.read(new File(imagePath));
-			JLabel picLabel = new JLabel(new ImageIcon(image));
+			java.net.URL image = getClass().getResource(imagePath);
+			ImageIcon pic = new ImageIcon(image);
+			JLabel picLabel = new JLabel(pic);
 	
-	        picLabel.setSize(image.getWidth(), image.getHeight());
+	        picLabel.setSize(pic.getIconWidth(), pic.getIconHeight());
 			picLabel.setLocation(x, y);
 			panel.add(picLabel);
 			
