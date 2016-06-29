@@ -30,11 +30,18 @@ def gui():
 	pygame.mixer.music.load('testsong.mp3')
 	pygame.mixer.music.play()
 
-	fonttime = pygame.font.Font('freesansbold.ttf', 57)
+	fonthour = pygame.font.Font('freesansbold.ttf', 60)
+	fontmin = pygame.font.Font('freesansbold.ttf', 29)
 	fontdate = pygame.font.Font('freesansbold.ttf', 37)
-	times = fonttime.render(strftime("%I:%M"), True, (0,0,0))
-	timeRect = times.get_rect()
-	timeRect.center = (725, 450)
+	hour = fonthour.render(strftime("%I"), True, (0,0,0))
+	hourRect = hour.get_rect()
+	hourRect.center = (695, 450)
+	minutes = fontmin.render(strftime("%M"), True, (0,0,0))
+	minutesRect = minutes.get_rect()
+	minutesRect.center = (745, 438)
+	ampm = fontmin.render(strftime("%p"), True, (0,0,0))
+	ampmRect = ampm.get_rect()
+	ampmRect.center = (749, 462)
 	date = fontdate.render(strftime("%m-%d-%Y"), True, (0,0,0))
 	dateRect = date.get_rect()
 	dateRect.center = (100, 461)
@@ -45,8 +52,10 @@ def gui():
 		rot_minutehand = pygame.transform.rotate(minutehand, (360-(6*cminute)))
 		rot_minutehand.get_rect().center = minloc
 
-		times = fonttime.render(strftime("%I:%M"), True, (0,0,0))
-		date = fontdate.render(strftime("%m-%d-%Y-%S"), True, (0,0,0))
+		hour = fonthour.render(strftime("%I"), True, (0,0,0))
+		minutes = fontmin.render(strftime("%M"), True, (0,0,0))
+		ampm = fontmin.render(strftime("%p"), True, (0,0,0))
+		date = fontdate.render(strftime("%A, %B %d, %Y"), True, (0,0,0))
 		
 		DS.blit(background, (0,0))
 		DS.blit(topbar, (0,0))
@@ -56,7 +65,9 @@ def gui():
 		DS.blit(button, (24,204))
 		DS.blit(button, (24,296))
 		DS.blit(rot_minutehand, (395,61))
-		DS.blit(times, timeRect)
+		DS.blit(hour, hourRect)
+		DS.blit(minutes, minutesRect)
+		DS.blit(ampm, ampmRect)
 		DS.blit(date, dateRect)
 		#150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
 		for event in pygame.event.get():

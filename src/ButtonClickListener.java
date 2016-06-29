@@ -16,7 +16,11 @@ public class ButtonClickListener implements ActionListener{
 				music.clip.stop();
 			}catch(Exception ex){}
 			
-			music = new Sound("assets/adagio.wav");
+			music = new Sound("testsong.mp3");
+			try{
+			music.clip.open();
+			}catch(Exception exv){}
+			music.clip.start();
 
 		}
 		else  {

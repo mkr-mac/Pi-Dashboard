@@ -22,7 +22,7 @@ public class GUI {
 	Picture clock;
 	Picture background;
 	
-	public GUI(){		
+	public GUI(){
 		initialize();
 	}
 
