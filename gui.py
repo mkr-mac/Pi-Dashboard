@@ -3,6 +3,15 @@ from pygame.locals import *
 from time import strftime, gmtime
 import datetime
 
+def rot_center(image, angle):
+	#"""rotate an image while keeping its center and size"""
+	orig_rect = image.get_rect()
+	rot_image = pygame.transform.rotate(image, angle)
+	rot_rect = orig_rect.copy()
+	rot_rect.center = rot_image.get_rect().center
+	rot_image = rot_image.subsurface(rot_rect).copy()
+	return rot_image
+
 def gui():
 
 	SCREENWIDTH = 800
@@ -25,10 +34,8 @@ def gui():
 	media = pygame.image.load('MediaButton.png')
 	button = pygame.image.load('LargeButton.png')
 	minutehand = pygame.image.load('MinuteHand.png')
+	hourhand = pygame.image.load('HourHand.png')
 	minloc = minutehand.get_rect().center
-
-	pygame.mixer.music.load('testsong.mp3')
-	pygame.mixer.music.play()
 
 	fonthour = pygame.font.Font('freesansbold.ttf', 60)
 	fontmin = pygame.font.Font('freesansbold.ttf', 29)
@@ -41,16 +48,22 @@ def gui():
 	minutesRect.center = (745, 438)
 	ampm = fontmin.render(strftime("%p"), True, (0,0,0))
 	ampmRect = ampm.get_rect()
-	ampmRect.center = (749, 462)
+	ampmRect.topleft = (749, 462)
 	date = fontdate.render(strftime("%m-%d-%Y"), True, (0,0,0))
 	dateRect = date.get_rect()
 	dateRect.center = (100, 461)
-	cminuteOLD = -1
+	
+	mousex = 0
+	mousey = 0
+	mouseclicked = False
+	
 	while True:
 		
+		csecond = datetime.datetime.now().second
 		cminute = datetime.datetime.now().minute
-		rot_minutehand = pygame.transform.rotate(minutehand, (360-(6*cminute)))
-		rot_minutehand.get_rect().center = minloc
+		chour = datetime.datetime.now().hour
+		rot_minutehand = rot_center(minutehand, (360.0-((6.0*cminute)+(.1*csecond))))
+		rot_hourhand = rot_center(hourhand, (360.0-((.5*cminute)+(30.0*chour))))
 
 		hour = fonthour.render(strftime("%I"), True, (0,0,0))
 		minutes = fontmin.render(strftime("%M"), True, (0,0,0))
@@ -65,6 +78,7 @@ def gui():
 		DS.blit(button, (24,204))
 		DS.blit(button, (24,296))
 		DS.blit(rot_minutehand, (395,61))
+		DS.blit(rot_hourhand, (395,61))
 		DS.blit(hour, hourRect)
 		DS.blit(minutes, minutesRect)
 		DS.blit(ampm, ampmRect)
@@ -77,10 +91,17 @@ def gui():
 			elif event.type == MOUSEMOTION:
 				mousex, mousey = event.pos
 			elif event.type == MOUSEBUTTONDOWN:
-				mousex, mousey = event.pos
-			elif event.type == MOUSEBUTTONUP:
 				mouseclicked = True
-	
+			elif event.type == MOUSEBUTTONUP:
+				mouseclicked = False
+		
+		medrect = media.get_rect()
+		if medrect.bottom > mousey > medrect.top and medrect.right > mousex > medrect.left and mouseclicked == True:
+			pygame.mixer.music.stop()
+			pygame.mixer.music.load('testsong.mp3')
+			pygame.mixer.music.play()
+
+		mouseclicked == False
 		pygame.display.update()
 		fpsClock.tick(FPS)
 
