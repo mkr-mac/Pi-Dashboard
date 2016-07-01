@@ -3,6 +3,30 @@ from pygame.locals import *
 from time import strftime, gmtime
 import datetime
 
+class ImageButton:
+	def __init__(self, image, x, y):
+		self.x = x
+		self.y = y
+		self.image = pygame.image.load(image)
+		self.coords = (x,y)
+		self.rect = self.image.get_rect()
+		self.width = self.image.get_width()
+		self.height = self.image.get_height()
+
+class Text:
+	def __init__(self, text, x, y, font=None, color=None):
+		self.x = x
+		self.y = y
+		if font == None:
+			self.font = pygame.font.Font('freesansbold.ttf')
+		else:
+			self.font = pygame.font.Font(font)
+		
+		if color == None:
+			self.color = (0,0,0)
+		else:
+			self.color = color
+
 def rot_center(image, angle):
 	#"""rotate an image while keeping its center and size"""
 	orig_rect = image.get_rect()
@@ -31,7 +55,7 @@ def gui():
 	topbar = pygame.image.load('TopLine.png')
 	bottombar = pygame.image.load('BottomLine.png')
 	clockImg = pygame.image.load('Clock.png')
-	media = pygame.image.load('MediaButton.png')
+	media = ImageButton('MediaButton.png', 24, 112)
 	button = pygame.image.load('LargeButton.png')
 	minutehand = pygame.image.load('MinuteHand.png')
 	hourhand = pygame.image.load('HourHand.png')
@@ -74,7 +98,7 @@ def gui():
 		DS.blit(topbar, (0,0))
 		DS.blit(bottombar, (0,408))
 		DS.blit(clockImg, (395,61))
-		DS.blit(media, (24,112))
+		DS.blit(media.image, media.coords)
 		DS.blit(button, (24,204))
 		DS.blit(button, (24,296))
 		DS.blit(rot_minutehand, (395,61))
@@ -95,8 +119,7 @@ def gui():
 			elif event.type == MOUSEBUTTONUP:
 				mouseclicked = False
 		
-		medrect = media.get_rect()
-		if medrect.bottom > mousey > medrect.top and medrect.right > mousex > medrect.left and mouseclicked == True:
+		if (media.y + media.height) > mousey > media.y and (media.x + media.width) > mousex > media.x and mouseclicked == True:
 			pygame.mixer.music.stop()
 			pygame.mixer.music.load('testsong.mp3')
 			pygame.mixer.music.play()
@@ -104,16 +127,5 @@ def gui():
 		mouseclicked == False
 		pygame.display.update()
 		fpsClock.tick(FPS)
-
-def menucontent(menu):
-	if menu == START:
-		return
-
-def rectangleObject(obj, cx, cy):
-	image = obj
-	x = cx
-	y = cy
-	coords = (x,y)
-	rect = obj.get_rect()
 
 print gui()
