@@ -14,11 +14,13 @@ class ImageButton:
 		self.height = self.image.get_height()
 
 class Text:
-	def __init__(self, text, x, y, font=None, color=None):
+	def __init__(self, text, size, x, y, font=None, color=None):
 		self.x = x
 		self.y = y
+		self.text = text
+		self.size = size
 		if font == None:
-			self.font = pygame.font.Font('freesansbold.ttf')
+			self.font = pygame.font.Font('comicsansms')
 		else:
 			self.font = pygame.font.Font(font)
 		
@@ -26,6 +28,9 @@ class Text:
 			self.color = (0,0,0)
 		else:
 			self.color = color
+
+		self.render = self.font.render(
+		self.rect = self.text.get_rect()
 
 def rot_center(image, angle):
 	#"""rotate an image while keeping its center and size"""
@@ -59,14 +64,10 @@ def gui():
 	button = pygame.image.load('LargeButton.png')
 	minutehand = pygame.image.load('MinuteHand.png')
 	hourhand = pygame.image.load('HourHand.png')
-	minloc = minutehand.get_rect().center
 
-	fonthour = pygame.font.Font('freesansbold.ttf', 60)
+	hour = Text('%I', 60, 675, 430, 'freesansbold.ttf', (255, 0, 0))
 	fontmin = pygame.font.Font('freesansbold.ttf', 29)
-	fontdate = pygame.font.Font('freesansbold.ttf', 37)
-	hour = fonthour.render(strftime("%I"), True, (0,0,0))
-	hourRect = hour.get_rect()
-	hourRect.center = (695, 450)
+	fontdate = pygame.font.SysFont('comicsansms', 37)
 	minutes = fontmin.render(strftime("%M"), True, (0,0,0))
 	minutesRect = minutes.get_rect()
 	minutesRect.center = (745, 438)
@@ -89,7 +90,7 @@ def gui():
 		rot_minutehand = rot_center(minutehand, (360.0-((6.0*cminute)+(.1*csecond))))
 		rot_hourhand = rot_center(hourhand, (360.0-((.5*cminute)+(30.0*chour))))
 
-		hour = fonthour.render(strftime("%I"), True, (0,0,0))
+		hour.text = fonthour.render(strftime("%I"), True, hour.color)
 		minutes = fontmin.render(strftime("%M"), True, (0,0,0))
 		ampm = fontmin.render(strftime("%p"), True, (0,0,0))
 		date = fontdate.render(strftime("%A, %B %d, %Y"), True, (0,0,0))
@@ -103,7 +104,7 @@ def gui():
 		DS.blit(button, (24,296))
 		DS.blit(rot_minutehand, (395,61))
 		DS.blit(rot_hourhand, (395,61))
-		DS.blit(hour, hourRect)
+		DS.blit(hour.text, hour.rect)
 		DS.blit(minutes, minutesRect)
 		DS.blit(ampm, ampmRect)
 		DS.blit(date, dateRect)
