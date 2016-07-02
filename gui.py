@@ -1,7 +1,10 @@
-import sys, pygame, random, time, datetime
+import sys, pygame, random, time, datetime, mutagen, os
 from pygame.locals import *
 from time import strftime, gmtime
 from datetime import datetime
+from mutagen.flac import FLAC
+from mutagen.mp3 import MP3
+from mutagen.id3 import ID3
 
 class Image:
 	def __init__(self, image, x, y, clickable = False, action = None):
@@ -65,28 +68,36 @@ def rot_center(image, angle):
 	rot_image = rot_image.subsurface(rot_rect).copy()
 	return rot_image
 
+def listdir():
+	for file in os.listdir(os.getcwd()):
+		end = file.endswith
+		if end(".mp3") or end(".wav") or end(".flac") or end(".ogg"):
+			print(file)	
+
+
 def gui():
 
 	SCREENWIDTH = 800
 	SCREENHEIGHT = 480
+	FULLSCREEN = False
 	
 	pygame.init()
 	FPS = 60
 	fpsClock  = pygame.time.Clock()
-	DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+	DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT), pygame.FULLSCREEN)
 	pygame.display.set_caption('Pi-Board')
 
 	background = Image('Background.png', 0, 0)
 	topbar = Image('TopLine.png', 0, 0)
 	bottombar = Image('BottomLine.png', 0, 408)
-	clockImg = Image('Clock.png', 395, 61)
+	clockImg = Image('Clock2.png', 395, 61)
 	media = Image('MediaButton.png', 24, 112, True, playsong)
 	button = Image('LargeButton.png', 24, 204, True, quit)
-	button2 = Image('LargeButton.png', 24, 296)
-	minutehand = Image('MinuteHand.png', 395, 61)
-	hourhand = Image('HourHand.png', 395, 61)
-	rot_minutehand = Image('MinuteHand.png', 395, 61)
-	rot_hourhand = Image('HourHand.png', 395, 61)
+	button2 = Image('LargeButton.png', 24, 296, True, listdir)
+	minutehand = Image('MinuteHand.png', 395, 60)
+	hourhand = Image('HourHand.png', 395, 60)
+	rot_minutehand = Image('MinuteHand.png', 395, 60)
+	rot_hourhand = Image('HourHand.png', 395, 60)
 
 	hour = Text(strftime('%I'), 675, 412, 'freesansbold.ttf', 60, (0,0,0))
 	minutes = Text(strftime('%M'), 740, 412, 'freesansbold.ttf', 29, (0,0,0))
