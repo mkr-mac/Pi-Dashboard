@@ -1,7 +1,7 @@
 import sys, pygame, random, time, datetime
 from pygame.locals import *
 from time import strftime, gmtime
-import datetime
+from datetime import datetime
 
 class Image:
 	def __init__(self, image, x, y):
@@ -54,14 +54,10 @@ def gui():
 	SCREENHEIGHT = 480
 	
 	pygame.init()
-	now = datetime.datetime.now()
-
 	FPS = 60
 	fpsClock  = pygame.time.Clock()
-
-
 	DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
-	pygame.display.set_caption('Gooey')
+	pygame.display.set_caption('Pi-Board')
 
 	background = Image('Background.png', 0, 0)
 	topbar = Image('TopLine.png', 0, 0)
@@ -72,11 +68,16 @@ def gui():
 	button2 = Image('LargeButton.png', 24, 296)
 	minutehand = Image('MinuteHand.png', 395, 61)
 	hourhand = Image('HourHand.png', 395, 61)
+	rot_minutehand = Image('MinuteHand.png', 395, 61)
+	rot_hourhand = Image('HourHand.png', 395, 61)
 
 	hour = Text(strftime('%I'), 675, 412, 'freesansbold.ttf', 60, (0,0,0))
 	minutes = Text(strftime('%M'), 740, 412, 'freesansbold.ttf', 29, (0,0,0))
 	date = Text(strftime("%A, %B %d, %Y"), 10, 430, 'freesansbold.ttf', 36, (0,0,0))
 	ampm = Text(strftime("%p"), 740, 437, 'freesansbold.ttf', 29, (0,0,0))
+	
+	startscreen = [background, topbar, bottombar, clockImg, media, button, button2,
+					rot_minutehand, rot_hourhand, hour, minutes, date, ampm]
 	
 	mousex = 0
 	mousey = 0
@@ -84,31 +85,22 @@ def gui():
 	
 	while True:
 		
-		csecond = datetime.datetime.now().second
-		cminute = minutes.text = datetime.datetime.now().minute
-		chour = datetime.datetime.now().hour
-		rot_minutehand = rot_center(minutehand.image, (360.0-((6.0*cminute)+(.1*csecond))))
-		rot_hourhand = rot_center(hourhand.image, (360.0-((.5*cminute)+(30.0*chour))))
+		csecond = datetime.now().second
+		cminute = datetime.now().minute
+		chour = datetime.now().hour
+		rot_minutehand.image = rot_center(minutehand.image,
+								(360.0-((6.0*cminute)+(.1*csecond))))
+		rot_hourhand.image = rot_center(hourhand.image,
+								(360.0-((.5*cminute)+(30.0*chour))))
 		
 		hour.text = strftime('%I')
 		minutes.text = strftime('%M')
 		ampm.text = strftime("%p")
 		date.text = strftime("%A, %B %d, %Y")
 		
-		background.draw(DS)
-		topbar.draw(DS)
-		bottombar.draw(DS)
-		clockImg.draw(DS)
-		media.draw(DS)
-		button.draw(DS)
-		button2.draw(DS)
-		DS.blit(rot_minutehand, (395,61))
-		DS.blit(rot_hourhand, (395,61))
-		hour.draw(DS)
-		minutes.draw(DS)
-		ampm.draw(DS)
-		date.draw(DS)
-		#150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
+		for obj in startscreen:
+			obj.draw(DS)
+		
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				pygame.quit()
@@ -120,7 +112,10 @@ def gui():
 			elif event.type == MOUSEBUTTONUP:
 				mouseclicked = False
 		
-		if (media.y + media.height) > mousey > media.y and (media.x + media.width) > mousex > media.x and mouseclicked == True:
+		if (media.y + media.height) > mousey > media.y and \
+			(media.x + media.width) > mousex > media.x and \
+			mouseclicked == True:
+
 			pygame.mixer.music.stop()
 			pygame.mixer.music.load('testsong.mp3')
 			pygame.mixer.music.play()
