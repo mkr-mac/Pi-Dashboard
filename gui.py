@@ -4,7 +4,7 @@ from time import strftime, gmtime
 from datetime import datetime
 
 class Image:
-	def __init__(self, image, x, y):
+	def __init__(self, image, x, y, clickable = False, action = None):
 		self.x = x
 		self.y = y
 		self.image = pygame.image.load(image)
@@ -12,12 +12,18 @@ class Image:
 		self.rect = self.image.get_rect()
 		self.width = self.image.get_width()
 		self.height = self.image.get_height()
+		self.clickable = clickable
+		self.action = action
 	
 	def draw(self, DS):
 		DS.blit(self.image, self.coords)
+	
+	def checkclick(self, mousex, mousey):
+		return (self.y+self.height > mousey > self.y and 
+				self.x+self.width > mousex > self.x)
 
 class Text:
-	def __init__(self, text, x, y, font, size, color=None):
+	def __init__(self, text, x, y, font, size, color=None, clickable = False, action = None):
 		self.x = x
 		self.y = y
 		self.coords = (x, y)
@@ -34,10 +40,21 @@ class Text:
 		self.rect = self.render.get_rect()
 		self.height = self.rect.height
 		self.width = self.rect.width
+		self.clickable = clickable
+		self.action = action
 
 	def draw(self, DS):
 		self.render = self.font.render(self.text, True, self.color)
 		DS.blit(self.render, self.coords)
+
+def quit():
+	pygame.quit()
+	sys.exit()
+
+def playsong():
+	pygame.mixer.music.stop()
+	pygame.mixer.music.load('testsong.mp3')
+	pygame.mixer.music.play()
 
 def rot_center(image, angle):
 	#"""rotate an image while keeping its center and size"""
@@ -63,8 +80,8 @@ def gui():
 	topbar = Image('TopLine.png', 0, 0)
 	bottombar = Image('BottomLine.png', 0, 408)
 	clockImg = Image('Clock.png', 395, 61)
-	media = Image('MediaButton.png', 24, 112)
-	button = Image('LargeButton.png', 24, 204)
+	media = Image('MediaButton.png', 24, 112, True, playsong)
+	button = Image('LargeButton.png', 24, 204, True, quit)
 	button2 = Image('LargeButton.png', 24, 296)
 	minutehand = Image('MinuteHand.png', 395, 61)
 	hourhand = Image('HourHand.png', 395, 61)
@@ -85,9 +102,10 @@ def gui():
 	
 	while True:
 		
-		csecond = datetime.now().second
-		cminute = datetime.now().minute
-		chour = datetime.now().hour
+		now = datetime.now()
+		csecond = now.second
+		cminute = now.minute
+		chour = now.hour
 		rot_minutehand.image = rot_center(minutehand.image,
 								(360.0-((6.0*cminute)+(.1*csecond))))
 		rot_hourhand.image = rot_center(hourhand.image,
@@ -103,8 +121,7 @@ def gui():
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
-				pygame.quit()
-				sys.exit()
+				quit()
 			elif event.type == MOUSEMOTION:
 				mousex, mousey = event.pos
 			elif event.type == MOUSEBUTTONDOWN:
@@ -112,13 +129,10 @@ def gui():
 			elif event.type == MOUSEBUTTONUP:
 				mouseclicked = False
 		
-		if (media.y + media.height) > mousey > media.y and \
-			(media.x + media.width) > mousex > media.x and \
-			mouseclicked == True:
-
-			pygame.mixer.music.stop()
-			pygame.mixer.music.load('testsong.mp3')
-			pygame.mixer.music.play()
+		if mouseclicked == True:
+			for obj in startscreen:
+				if obj.clickable and obj.checkclick(mousex, mousey):
+					obj.action()
 
 		mouseclicked == False
 		pygame.display.update()
