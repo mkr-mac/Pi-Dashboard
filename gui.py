@@ -3,7 +3,7 @@ from pygame.locals import *
 from time import strftime, gmtime
 import datetime
 
-class ImageButton:
+class Image:
 	def __init__(self, image, x, y):
 		self.x = x
 		self.y = y
@@ -12,25 +12,32 @@ class ImageButton:
 		self.rect = self.image.get_rect()
 		self.width = self.image.get_width()
 		self.height = self.image.get_height()
+	
+	def draw(self, DS):
+		DS.blit(self.image, self.coords)
 
 class Text:
-	def __init__(self, text, size, x, y, font=None, color=None):
+	def __init__(self, text, x, y, font, size, color=None):
 		self.x = x
 		self.y = y
+		self.coords = (x, y)
 		self.text = text
 		self.size = size
-		if font == None:
-			self.font = pygame.font.Font('comicsansms')
-		else:
-			self.font = pygame.font.Font(font)
+		self.font = pygame.font.Font(font, size)
 		
 		if color == None:
 			self.color = (0,0,0)
 		else:
 			self.color = color
 
-		self.render = self.font.render(
-		self.rect = self.text.get_rect()
+		self.render = self.font.render(self.text, True, self.color)
+		self.rect = self.render.get_rect()
+		self.height = self.rect.height
+		self.width = self.rect.width
+
+	def draw(self, DS):
+		self.render = self.font.render(self.text, True, self.color)
+		DS.blit(self.render, self.coords)
 
 def rot_center(image, angle):
 	#"""rotate an image while keeping its center and size"""
@@ -56,27 +63,20 @@ def gui():
 	DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 	pygame.display.set_caption('Gooey')
 
-	background = pygame.image.load('Background.png')
-	topbar = pygame.image.load('TopLine.png')
-	bottombar = pygame.image.load('BottomLine.png')
-	clockImg = pygame.image.load('Clock.png')
-	media = ImageButton('MediaButton.png', 24, 112)
-	button = pygame.image.load('LargeButton.png')
-	minutehand = pygame.image.load('MinuteHand.png')
-	hourhand = pygame.image.load('HourHand.png')
+	background = Image('Background.png', 0, 0)
+	topbar = Image('TopLine.png', 0, 0)
+	bottombar = Image('BottomLine.png', 0, 408)
+	clockImg = Image('Clock.png', 395, 61)
+	media = Image('MediaButton.png', 24, 112)
+	button = Image('LargeButton.png', 24, 204)
+	button2 = Image('LargeButton.png', 24, 296)
+	minutehand = Image('MinuteHand.png', 395, 61)
+	hourhand = Image('HourHand.png', 395, 61)
 
-	hour = Text('%I', 60, 675, 430, 'freesansbold.ttf', (255, 0, 0))
-	fontmin = pygame.font.Font('freesansbold.ttf', 29)
-	fontdate = pygame.font.SysFont('comicsansms', 37)
-	minutes = fontmin.render(strftime("%M"), True, (0,0,0))
-	minutesRect = minutes.get_rect()
-	minutesRect.center = (745, 438)
-	ampm = fontmin.render(strftime("%p"), True, (0,0,0))
-	ampmRect = ampm.get_rect()
-	ampmRect.topleft = (749, 462)
-	date = fontdate.render(strftime("%m-%d-%Y"), True, (0,0,0))
-	dateRect = date.get_rect()
-	dateRect.center = (100, 461)
+	hour = Text(strftime('%I'), 675, 412, 'freesansbold.ttf', 60, (0,0,0))
+	minutes = Text(strftime('%M'), 740, 412, 'freesansbold.ttf', 29, (0,0,0))
+	date = Text(strftime("%A, %B %d, %Y"), 10, 430, 'freesansbold.ttf', 36, (0,0,0))
+	ampm = Text(strftime("%p"), 740, 437, 'freesansbold.ttf', 29, (0,0,0))
 	
 	mousex = 0
 	mousey = 0
@@ -85,29 +85,29 @@ def gui():
 	while True:
 		
 		csecond = datetime.datetime.now().second
-		cminute = datetime.datetime.now().minute
+		cminute = minutes.text = datetime.datetime.now().minute
 		chour = datetime.datetime.now().hour
-		rot_minutehand = rot_center(minutehand, (360.0-((6.0*cminute)+(.1*csecond))))
-		rot_hourhand = rot_center(hourhand, (360.0-((.5*cminute)+(30.0*chour))))
-
-		hour.text = fonthour.render(strftime("%I"), True, hour.color)
-		minutes = fontmin.render(strftime("%M"), True, (0,0,0))
-		ampm = fontmin.render(strftime("%p"), True, (0,0,0))
-		date = fontdate.render(strftime("%A, %B %d, %Y"), True, (0,0,0))
+		rot_minutehand = rot_center(minutehand.image, (360.0-((6.0*cminute)+(.1*csecond))))
+		rot_hourhand = rot_center(hourhand.image, (360.0-((.5*cminute)+(30.0*chour))))
 		
-		DS.blit(background, (0,0))
-		DS.blit(topbar, (0,0))
-		DS.blit(bottombar, (0,408))
-		DS.blit(clockImg, (395,61))
-		DS.blit(media.image, media.coords)
-		DS.blit(button, (24,204))
-		DS.blit(button, (24,296))
+		hour.text = strftime('%I')
+		minutes.text = strftime('%M')
+		ampm.text = strftime("%p")
+		date.text = strftime("%A, %B %d, %Y")
+		
+		background.draw(DS)
+		topbar.draw(DS)
+		bottombar.draw(DS)
+		clockImg.draw(DS)
+		media.draw(DS)
+		button.draw(DS)
+		button2.draw(DS)
 		DS.blit(rot_minutehand, (395,61))
 		DS.blit(rot_hourhand, (395,61))
-		DS.blit(hour.text, hour.rect)
-		DS.blit(minutes, minutesRect)
-		DS.blit(ampm, ampmRect)
-		DS.blit(date, dateRect)
+		hour.draw(DS)
+		minutes.draw(DS)
+		ampm.draw(DS)
+		date.draw(DS)
 		#150+100 > mouse[0] > 150 and 450+50 > mouse[1] > 450:
 		for event in pygame.event.get():
 			if event.type == QUIT:
