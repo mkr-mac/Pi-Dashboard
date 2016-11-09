@@ -20,7 +20,7 @@ class Image:
 		self.action = action
 	
 	def draw(self, DS):
-		DS.blit(self.image, self.coords)
+		DS.blit(self.image, (self.x,self.y))
 	
 	def checkclick(self, mousex, mousey):
 		return (self.y+self.height > mousey > self.y and 
@@ -49,7 +49,7 @@ class Text:
 
 	def draw(self, DS):
 		self.render = self.font.render(self.text, True, self.color)
-		DS.blit(self.render, self.coords)
+		DS.blit(self.render, (self.x,self.y))
 		
 	def set_coords(self, xy):
 		self.coords = xy
@@ -57,7 +57,13 @@ class Text:
 	def checkclick(self, mousex, mousey):
 		return (self.y+self.height > mousey > self.y and 
 				self.x+self.width > mousex > self.x)
-
+				
+	def set_current_rect(self):
+		self.render = self.font.render(self.text, True, self.color)
+		self.rect = self.render.get_rect()
+		self.height = self.rect.height
+		self.width = self.rect.width
+	
 class Sound:
 	def __init__(self, sound):
 		self.sound = sound
@@ -178,8 +184,10 @@ skip_fwd = Image('Skip Forward.png', 146, 423, True, 'next_song')
 song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 
 info_bar = Text('Words of Others', 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
-info_bar.rect.right = 668
+info_bar.x = 668 - info_bar.width
 digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
+#digital_clock.x = 794 - digital_clock.width
+print digital_clock.width
 
 always_up = [background, vol_up, vol_down, skip_back, skip_fwd, play, pause, stop, digital_clock, info_bar]
 start = [media, button, button2]
@@ -200,6 +208,9 @@ while True:
 	else:
 		chour = str(now.hour)
 	digital_clock.text = chour + ':' + strftime('%M')
+	digital_clock.set_current_rect()
+	digital_clock.x = 794 - digital_clock.width
+	
 	for obj in current:
 		obj.draw(DS)
 	
