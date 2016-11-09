@@ -1,4 +1,4 @@
-import sys, pygame, random, time, datetime, mutagen, os
+import sys, pygame, random, os
 from pygame.locals import *
 from time import strftime, gmtime
 from datetime import datetime
@@ -50,36 +50,70 @@ class Text:
 	def draw(self, DS):
 		self.render = self.font.render(self.text, True, self.color)
 		DS.blit(self.render, self.coords)
+		
+	def set_coords(self, xy):
+		self.coords = xy
+	
+	def checkclick(self, mousex, mousey):
+		return (self.y+self.height > mousey > self.y and 
+				self.x+self.width > mousex > self.x)
 
 class Sound:
 	def __init__(self, sound):
 		self.sound = sound
-
-class Panel:
-	def __init__(self):
-		self.start = []
-		self.media = []
+		
+class ScrollingList:
+	def __init__(self, string_list, x, y, width, height, blocks_to_display):
+		self.string_list = ['Uno', 'dos', 'tres']
+		self.x = x
+		self.y = y
+		self.width = width
+		self.height = height
+		self.blocks_to_display = blocks_to_display
+		self.block_height = height/blocks_to_display
+		self.current_block = 0
+		self.clickable = True
+		self.text_boxes = []
+		self.action = ''
+		
+		for str in self.string_list:
+			str = Text(str, 0, 0, 'freesansbold.ttf',32, (255,255,255), True, 'set_current_song')
+			str.width = self.width
+			str.height = self.height
+			self.text_boxes.append(str)
+		
+	def draw(self, DS):
+		for block in range(self.current_block, self.current_block + self.blocks_to_display):
+			self.text_boxes[self.current_block+block].set_coords((self.x, self.y+block*self.block_height))
+			self.text_boxes[self.current_block+block].draw(DS)
 	
-	def to_start(self):
-		self.current = self.start
-
-	def to_media(self):
-		self.current = self.media
+	def checkclick(self, mousex, mousey):
+		for block in range(self.current_block, self.current_block + self.blocks_to_display):
+			gl_num = self.current_block + block
+			if (self.y+(block+1)*self.block_height > mousey > self.y and self.x+self.width > mousex > self.x):
+				self.action = self.text_boxes[self.current_block+block].action
+				return True
+		return False
 
 def quit():
 	pygame.quit()
 	sys.exit()
 
-def playsong():
+def play_song():
 	pygame.mixer.music.stop()
-	pygame.mixer.music.load('testsong.mp3')
+	pygame.mixer.music.load(songlist[current_song])
 	pygame.mixer.music.play()
 
-def stopsong():
+def set_current_song():
+	current_song = getsonglist()[gl_num]
+	print gl_num
+	return ''
+	
+def stop_song():
 	pygame.mixer.music.stop()
 
 def rot_center(image, angle):
-	#"""rotate an image while keeping its center and size"""
+	"""rotate an image while keeping its center and size"""
 	orig_rect = image.get_rect()
 	rot_image = pygame.transform.rotate(image, angle)
 	rot_rect = orig_rect.copy()
@@ -95,91 +129,133 @@ def getsonglist():
 			songs.append(file_)
 	return sorted(songs, key=str.lower)
 
-def gui():
+def action(action):
+	if action == 'play_song':
+		pygame.mixer.music.stop()
+		pygame.mixer.music.load(songlist[current_song])
+		pygame.mixer.music.set_volume(volume/30.0)
+		pygame.mixer.music.play()
+	elif action == 'stop_song':
+		pygame.mixer.music.stop()
+	elif action == 'next_song':
+		pygame.mixer.music.stop()
+		pygame.mixer.music.load(songlist[current_song])
+		pygame.mixer.music.set_volume(volume)
+		pygame.mixer.music.play()
 
-	SCREENWIDTH = 800
-	SCREENHEIGHT = 480
-	FULLSCREEN = False
+SCREENWIDTH = 800
+SCREENHEIGHT = 480
+FULLSCREEN = False
 
-	P = Panel()
-	
-	pygame.init()
-	FPS = 60
-	fpsClock  = pygame.time.Clock()
-	if FULLSCREEN:
-		DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT), pygame.FULLSCREEN)
+pygame.init()
+FPS = 60
+fpsClock  = pygame.time.Clock()
+if FULLSCREEN:
+	DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT), pygame.FULLSCREEN)
+else:
+	DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
+
+pygame.display.set_caption('Pi-Board')
+
+songlist = getsonglist()
+current_song = 1
+print(len(songlist))
+volume = 30.0
+music_paused = False
+
+background = Image('Background.png', 0, 0)
+vol_up = Image('Volume Up.png', 15, 7, True, 'volume_up')
+vol_down = Image('Volume Down.png', 15, 364, True, 'volume_down')
+media = Image('MediaButton.png', 24, 112, True, 'to_media')
+button = Image('LargeButton.png', 24, 204, True, 'quit')
+button2 = Image('LargeButton.png', 24, 296)
+button3 = Image('LargeButton.png', 24, 296, True, 'to_start')
+play = Image('Play.png', 58, 423, True, 'play_song')
+pause = Image('Pause.png', 102, 423, True, 'stop_song')
+stop = Image('Stop.png', 190, 423, True, 'stop_song')
+skip_back = Image('Skip Back.png', 14, 423, True, 'previous_song')
+skip_fwd = Image('Skip Forward.png', 146, 423, True, 'next_song')
+song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
+
+info_bar = Text('Words of Others', 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
+info_bar.rect.right = 668
+digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
+
+always_up = [background, vol_up, vol_down, skip_back, skip_fwd, play, pause, stop, digital_clock, info_bar]
+start = [media, button, button2]
+media = [button, button3]
+current = always_up
+
+mousex = 0
+mousey = 0
+mouseclicked = False
+
+while True:
+
+	now = datetime.now()
+	if now.hour > 12:
+		chour = str(now.hour-12)
+	elif now.hour == 0:
+		chour = '12'
 	else:
-		DS = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
-
-	pygame.display.set_caption('Pi-Board')
+		chour = str(now.hour)
+	digital_clock.text = chour + ':' + strftime('%M')
+	for obj in current:
+		obj.draw(DS)
 	
-	background = Image('Background.png', 0, 0)
-	topbar = Image('TopLine.png', 0, 0)
-	bottombar = Image('BottomLine.png', 0, 408)
-	clockImg = Image('Clock2.png', 395, 61)
-	media = Image('MediaButton.png', 24, 112, True, P.to_media)
-	button = Image('LargeButton.png', 24, 204, True, quit)
-	button2 = Image('LargeButton.png', 24, 296)
-	button3 = Image('LargeButton.png', 24, 296, True, P.to_start)
-	minutehand = Image('MinuteHand.png', 395, 60)
-	hourhand = Image('HourHand.png', 395, 60)
-	rot_minutehand = Image('MinuteHand.png', 395, 60)
-	rot_hourhand = Image('HourHand.png', 395, 60)
-	playbutton = Image('Play.png', 450, 300, True, playsong)
-	stopbutton = Image('Stop.png', 340, 300, True, stopsong)
-
-	hour = Text(strftime('%I'), 675, 412, 'freesansbold.ttf', 60, (0,0,0))
-	minutes = Text(strftime('%M'), 740, 412, 'freesansbold.ttf', 29, (0,0,0))
-	date = Text(strftime("%A, %B %d, %Y"), 10, 440, 'freesansbold.ttf', 36, (0,0,0))
-	ampm = Text(strftime("%p"), 740, 437, 'freesansbold.ttf', 29, (0,0,0))
+	for event in pygame.event.get():
+		if event.type == QUIT:
+			quit()
+		elif event.type == MOUSEMOTION:
+			mousex, mousey = event.pos
+		elif event.type == MOUSEBUTTONDOWN:
+			mouseclicked = True
+		elif event.type == MOUSEBUTTONUP:
+			mouseclicked = False
 	
-	P.start = [background, topbar, bottombar, clockImg, media, button, button2,
-				rot_minutehand, rot_hourhand, hour, minutes, date, ampm]
-	P.media = [background, bottombar, button, button3, playbutton, 
-				stopbutton, hour, minutes, date, ampm]
-	P.to_start()
-	
-	songlist = getsonglist()
-	
-	print (songlist)
-
-	mousex = 0
-	mousey = 0
-	mouseclicked = False
-	
-	while True:
-
-		now = datetime.now()
-		rot_minutehand.image = rot_center(minutehand.image,
-								(360.0-((6.0*now.minute)+(.1*now.second))))
-		rot_hourhand.image = rot_center(hourhand.image,
-								(360.0-((.5*now.minute)+(30.0*now.hour))))
-		
-		hour.text = strftime('%I')
-		minutes.text = strftime('%M')
-		ampm.text = strftime("%p")
-		date.text = strftime("%A, %B %d, %Y")
-		
-		for obj in P.current:
-			obj.draw(DS)
-		
-		for event in pygame.event.get():
-			if event.type == QUIT:
-				quit()
-			elif event.type == MOUSEMOTION:
-				mousex, mousey = event.pos
-			elif event.type == MOUSEBUTTONDOWN:
-				mouseclicked = True
-			elif event.type == MOUSEBUTTONUP:
-				mouseclicked = False
-		
-		if mouseclicked == True:
-			for obj in P.current:
-				if obj.clickable and obj.checkclick(mousex, mousey):
-					obj.action()
-
-		mouseclicked == False
-		pygame.display.update()
-		fpsClock.tick(FPS)
-
-print gui()
+	if mouseclicked == True:
+		for obj in current:
+			if obj.clickable and obj.checkclick(mousex, mousey):
+				action = obj.action
+				if action == 'play_song':
+					if music_paused:
+						pygame.mixer.music.unpause()
+						music_paused = False
+					else:
+						pygame.mixer.music.stop()
+						pygame.mixer.music.load(songlist[current_song])
+						pygame.mixer.music.set_volume(volume/30.0)
+						pygame.mixer.music.play()
+				elif action == 'stop_song':
+					pygame.mixer.music.stop()
+				elif action == 'next_song':
+					pygame.mixer.music.stop()
+					current_song += 1
+					if current_song == len(songlist):
+						current_song = 0
+					pygame.mixer.music.load(songlist[current_song])
+					pygame.mixer.music.set_volume(volume/30.0)
+					pygame.mixer.music.play()
+				elif action == 'previous_song':
+					pygame.mixer.music.stop()
+					if current_song == 0:
+						current_song = len(songlist)						
+					current_song -= 1
+					pygame.mixer.music.load(songlist[current_song])
+					pygame.mixer.music.set_volume(volume/30.0)
+					pygame.mixer.music.play()
+				elif action == 'pause_song':
+					pygame.mixer.music.pause()
+					music_paused = True
+				elif action == 'volume_up':
+					if volume < 30.0:
+						volume += 1.0
+						pygame.mixer.music.set_volume(volume/30.0)
+				elif action == 'volume_down':
+					if volume > 0.0:
+						volume -= 1.0
+						pygame.mixer.music.set_volume(volume/30.0)
+				
+	mouseclicked == False
+	pygame.display.update()
+	fpsClock.tick(FPS)
