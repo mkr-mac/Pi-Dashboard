@@ -73,7 +73,7 @@ music_paused = False
 background = Image('Background.png', 0, 0)
 #Music controls
 play = Image('Play.png', 58, 423, True, 'play_song')
-pause = Image('Pause.png', 102, 423, True, 'stop_song')
+pause = Image('Pause.png', 102, 423, True, 'pause_song')
 stop = Image('Stop.png', 190, 423, True, 'stop_song')
 skip_back = Image('Skip Back.png', 14, 423, True, 'previous_song')
 skip_fwd = Image('Skip Forward.png', 146, 423, True, 'next_song')
@@ -151,10 +151,13 @@ while True:
 		elif event.type == MOUSEBUTTONUP:
 			mouseclicked = False
 	
+	#Actions on click
+	#Really needs cleaned up
 	if mouseclicked == True:
 		for obj in current:
 			if obj.clickable and obj.checkclick(mousex, mousey):
 				action = obj.action
+				#Change things to function calls
 				if action == 'play_song':
 					if music_paused:
 						pygame.mixer.music.unpause()
