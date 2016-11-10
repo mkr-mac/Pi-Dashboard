@@ -67,6 +67,8 @@ class Text:
 class Sound:
 	def __init__(self, sound):
 		self.sound = sound
+		self.path, self.filename = os.path.split(sound)
+		print self.filename
 		try: 
 			self.soundID3 = ID3(sound)
 		except ID3NoHeaderError:
@@ -74,7 +76,7 @@ class Sound:
 		try:
 			self.title = str(self.soundID3["TIT2"])
 		except KeyError:
-			self.title = '' + sound
+			self.title = '' + self.filename
 		try:
 			self.album = str(self.soundID3["TALB"])
 		except KeyError:
@@ -169,10 +171,11 @@ def rot_center(image, angle):
 
 def getsonglist():
 	songs = []
-	for file_ in os.listdir(os.getcwd()):
-		end = file_.endswith
-		if end(".mp3") or end(".wav") or end(".flac") or end(".ogg"):
-			songs.append(Sound(file_))
+	for root, dirs, files in os.walk(os.getcwd()):
+		for file in files:
+			end = file.endswith
+			if end(".mp3") or end(".wav") or end(".flac") or end(".ogg"):
+				songs.append(Sound(os.path.join(root, file)))
 	return songs
 	#TODO: organize
 	#return sorted(songs, key=str.lower)
