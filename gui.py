@@ -72,41 +72,42 @@ class Sound:
 		except ID3NoHeaderError:
 			self.soundID3 = ID3()
 		try:
-			self.title = self.soundID3["TIT2"]	
+			self.title = str(self.soundID3["TIT2"])
 		except KeyError:
 			self.title = '' + sound
 		try:
-			self.album = self.soundID3["TALB"]
+			self.album = str(self.soundID3["TALB"])
 		except KeyError:
 			self.album = ''
 		try:
-			self.band = self.soundID3["TPE2"]
+			self.band = str(self.soundID3["TPE2"])
 		except KeyError:
 			self.band = ''
 		try:
-			self.description = self.soundID3["COMM"]
+			self.description = str(self.soundID3["COMM"])
 		except KeyError:
 			self.description = ''
 		try:
-			self.artist = self.soundID3["TPE1"]
+			self.artist = str(self.soundID3["TPE1"])
 		except KeyError:
 			self.artist = ''
 		try:
-			self.composer = self.soundID3["TCOM"]
+			self.composer = str(self.soundID3["TCOM"])
 		except KeyError:
 			self.composer = ''
 		try:
-			self.genre = self.soundID3["TCON"]
+			self.genre = str(self.soundID3["TCON"])
 		except KeyError:
 			self.genre = ''
 		try:
-			self.year = self.soundID3["TDRC"]
+			self.year = str(self.soundID3["TDRC"])
 		except KeyError:
 			self.year = ''
 		try:
-			self.track_number = self.soundID3["TRCK"]
+			self.track_number = str(self.soundID3["TRCK"])
 		except KeyError:
 			self.track_number = ''
+		self.infolayout = self.artist + ' - ' + self.title
 		
 class ScrollingList:
 	def __init__(self, string_list, x, y, width, height, blocks_to_display):
@@ -223,7 +224,7 @@ skip_back = Image('Skip Back.png', 14, 423, True, 'previous_song')
 skip_fwd = Image('Skip Forward.png', 146, 423, True, 'next_song')
 song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 
-info_bar = Text('Words of Others', 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
+info_bar = Text(songlist[current_song].infolayout, 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
 info_bar.x = 668 - info_bar.width
 digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
 
@@ -248,7 +249,6 @@ while True:
 	digital_clock.text = chour + ':' + strftime('%M')
 	digital_clock.set_current_rect()
 	digital_clock.x = 794 - digital_clock.width
-	
 	for obj in current:
 		obj.draw(DS)
 	
@@ -282,6 +282,9 @@ while True:
 					current_song += 1
 					if current_song == len(songlist):
 						current_song = 0
+					info_bar.text = songlist[current_song].infolayout
+					info_bar.set_current_rect()
+					info_bar.x = 668 - info_bar.width
 					pygame.mixer.music.load(songlist[current_song].sound)
 					pygame.mixer.music.set_volume(volume/30.0)
 					pygame.mixer.music.play()
@@ -290,6 +293,9 @@ while True:
 					if current_song == 0:
 						current_song = len(songlist)						
 					current_song -= 1
+					info_bar.text = songlist[current_song].infolayout
+					info_bar.set_current_rect()
+					info_bar.x = 668 - info_bar.width
 					pygame.mixer.music.load(songlist[current_song].sound)
 					pygame.mixer.music.set_volume(volume/30.0)
 					pygame.mixer.music.play()
