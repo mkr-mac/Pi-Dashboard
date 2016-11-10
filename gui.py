@@ -233,8 +233,10 @@ vol_bar_red = pygame.image.load('Volume Bar Red.png')
 info_bar = Text(songlist[current_song].infolayout, 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
 info_bar.x = 668 - info_bar.width
 digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
+song_time = Text('0:00', 242, 453, 'DS-DIGI.TTF', 28, (255,184,0))
 
-always_up = [background, vol_up, vol_down, skip_back, skip_fwd, play, pause, stop, digital_clock, info_bar]
+always_up = [background, vol_up, vol_down, skip_back, skip_fwd, 
+				play, pause, stop, digital_clock, info_bar, song_time]
 start = [media, button, button2]
 media = [button, button3]
 current = always_up
@@ -254,10 +256,13 @@ while True:
 	digital_clock.text = chour + ':' + strftime('%M')
 	digital_clock.set_current_rect()
 	digital_clock.x = 794 - digital_clock.width
+	tracker_time = pygame.mixer.music.get_pos()
+	song_time.text = str(tracker_time/1000)
 	
 	for obj in current:
 		obj.draw(DS)
 	
+	#Drawing the volume bars
 	if volume>0:
 		for n in range(int(volume)):
 			if n<10:
