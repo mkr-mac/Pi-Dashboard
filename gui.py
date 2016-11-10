@@ -110,9 +110,8 @@ def play_song():
 	pygame.mixer.music.load(songlist[current_song])
 	pygame.mixer.music.play()
 
-def set_current_song():
-	current_song = getsonglist()[gl_num]
-	print gl_num
+def set_current_song(song):
+	current_song = song
 	return ''
 	
 def stop_song():
@@ -165,7 +164,6 @@ pygame.display.set_caption('Pi-Board')
 
 songlist = getsonglist()
 current_song = 1
-print(len(songlist))
 volume = 30.0
 music_paused = False
 
@@ -186,8 +184,6 @@ song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 info_bar = Text('Words of Others', 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
 info_bar.x = 668 - info_bar.width
 digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
-#digital_clock.x = 794 - digital_clock.width
-print digital_clock.width
 
 always_up = [background, vol_up, vol_down, skip_back, skip_fwd, play, pause, stop, digital_clock, info_bar]
 start = [media, button, button2]
