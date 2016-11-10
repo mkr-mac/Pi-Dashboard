@@ -57,7 +57,7 @@ class Text:
 	def checkclick(self, mousex, mousey):
 		return (self.y+self.height > mousey > self.y and 
 				self.x+self.width > mousex > self.x)
-				
+	
 	def set_current_rect(self):
 		self.render = self.font.render(self.text, True, self.color)
 		self.rect = self.render.get_rect()
@@ -68,7 +68,7 @@ class Sound:
 	def __init__(self, sound):
 		self.sound = sound
 		self.path, self.filename = os.path.split(sound)
-		print self.filename
+		
 		try: 
 			self.soundID3 = ID3(sound)
 		except ID3NoHeaderError:
@@ -226,6 +226,9 @@ stop = Image('Stop.png', 190, 423, True, 'stop_song')
 skip_back = Image('Skip Back.png', 14, 423, True, 'previous_song')
 skip_fwd = Image('Skip Forward.png', 146, 423, True, 'next_song')
 song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
+vol_bar_green = pygame.image.load('Volume Bar Green.png')
+vol_bar_yellow = pygame.image.load('Volume Bar Yellow.png')
+vol_bar_red = pygame.image.load('Volume Bar Red.png')
 
 info_bar = Text(songlist[current_song].infolayout, 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
 info_bar.x = 668 - info_bar.width
@@ -241,7 +244,6 @@ mousey = 0
 mouseclicked = False
 
 while True:
-
 	now = datetime.now()
 	if now.hour > 12:
 		chour = str(now.hour-12)
@@ -252,8 +254,18 @@ while True:
 	digital_clock.text = chour + ':' + strftime('%M')
 	digital_clock.set_current_rect()
 	digital_clock.x = 794 - digital_clock.width
+	
 	for obj in current:
 		obj.draw(DS)
+	
+	if volume>0:
+		for n in range(int(volume)):
+			if n<10:
+				DS.blit(vol_bar_green, (15,(-10*n)+346))
+			elif n<20:
+				DS.blit(vol_bar_yellow, (15,(-10*n)+346))
+			else:
+				DS.blit(vol_bar_red, (15,(-10*n)+346))
 	
 	for event in pygame.event.get():
 		if event.type == QUIT:
