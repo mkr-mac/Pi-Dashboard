@@ -4,7 +4,7 @@ from time import strftime, gmtime
 from datetime import datetime
 from mutagen.flac import FLAC
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3
+from mutagen.id3 import ID3, ID3NoHeaderError, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC
 from mutagen.easyid3 import EasyID3
 
 class Image:
@@ -67,6 +67,46 @@ class Text:
 class Sound:
 	def __init__(self, sound):
 		self.sound = sound
+		try: 
+			self.soundID3 = ID3(sound)
+		except ID3NoHeaderError:
+			self.soundID3 = ID3()
+		try:
+			self.title = self.soundID3["TIT2"]	
+		except KeyError:
+			self.title = '' + sound
+		try:
+			self.album = self.soundID3["TALB"]
+		except KeyError:
+			self.album = ''
+		try:
+			self.band = self.soundID3["TPE2"]
+		except KeyError:
+			self.band = ''
+		try:
+			self.description = self.soundID3["COMM"]
+		except KeyError:
+			self.description = ''
+		try:
+			self.artist = self.soundID3["TPE1"]
+		except KeyError:
+			self.artist = ''
+		try:
+			self.composer = self.soundID3["TCOM"]
+		except KeyError:
+			self.composer = ''
+		try:
+			self.genre = self.soundID3["TCON"]
+		except KeyError:
+			self.genre = ''
+		try:
+			self.year = self.soundID3["TDRC"]
+		except KeyError:
+			self.year = ''
+		try:
+			self.track_number = self.soundID3["TRCK"]
+		except KeyError:
+			self.track_number = ''
 		
 class ScrollingList:
 	def __init__(self, string_list, x, y, width, height, blocks_to_display):
@@ -131,8 +171,10 @@ def getsonglist():
 	for file_ in os.listdir(os.getcwd()):
 		end = file_.endswith
 		if end(".mp3") or end(".wav") or end(".flac") or end(".ogg"):
-			songs.append(file_)
-	return sorted(songs, key=str.lower)
+			songs.append(Sound(file_))
+	return songs
+	#TODO: organize
+	#return sorted(songs, key=str.lower)
 
 def action(action):
 	if action == 'play_song':
@@ -230,7 +272,7 @@ while True:
 						music_paused = False
 					else:
 						pygame.mixer.music.stop()
-						pygame.mixer.music.load(songlist[current_song])
+						pygame.mixer.music.load(songlist[current_song].sound)
 						pygame.mixer.music.set_volume(volume/30.0)
 						pygame.mixer.music.play()
 				elif action == 'stop_song':
@@ -240,7 +282,7 @@ while True:
 					current_song += 1
 					if current_song == len(songlist):
 						current_song = 0
-					pygame.mixer.music.load(songlist[current_song])
+					pygame.mixer.music.load(songlist[current_song].sound)
 					pygame.mixer.music.set_volume(volume/30.0)
 					pygame.mixer.music.play()
 				elif action == 'previous_song':
@@ -248,7 +290,7 @@ while True:
 					if current_song == 0:
 						current_song = len(songlist)						
 					current_song -= 1
-					pygame.mixer.music.load(songlist[current_song])
+					pygame.mixer.music.load(songlist[current_song].sound)
 					pygame.mixer.music.set_volume(volume/30.0)
 					pygame.mixer.music.play()
 				elif action == 'pause_song':
@@ -263,6 +305,6 @@ while True:
 						volume -= 1.0
 						pygame.mixer.music.set_volume(volume/30.0)
 				
-	mouseclicked == False
+	mouseclicked = False
 	pygame.display.update()
 	fpsClock.tick(FPS)
