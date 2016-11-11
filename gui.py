@@ -96,7 +96,7 @@ song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 info_bar = Text(songlist[current_song].infolayout, 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
 info_bar.x = 668 - info_bar.width
 digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
-song_time = Text('0:00', 242, 453, 'DS-DIGI.TTF', 28, (255,184,0))
+song_time = Text('0:00', 242, 451, 'DS-DIGI.TTF', 28, (255,184,0))
 
 #The various lists of objects that make up the screens that can be loaded
 #These can be added together to easily combine screens/reduce redundancy
@@ -126,7 +126,10 @@ while True:
 	digital_clock.set_text(chour + ':' + strftime('%M'))
 	digital_clock.x = 794 - digital_clock.width
 	tracker_time = pygame.mixer.music.get_pos()
-	song_time.text = str(tracker_time/1000)
+	if tracker_time/1000%60<10:
+		song_time.set_text(str(tracker_time/60000)+":0"+str(tracker_time/1000%60))
+	else:
+		song_time.set_text(str(tracker_time/60000)+":"+str(tracker_time/1000%60))
 	
 	for obj in current:
 		obj.draw(DS)
