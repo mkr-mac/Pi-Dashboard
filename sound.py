@@ -49,5 +49,5 @@ class Sound:
 			self.track_number = str(self.soundID3["TRCK"])
 		except KeyError:
 			self.track_number = ''
-		self.infolayout = self.artist + ' - ' + self.title
+		self.infolayout = '    ' + self.artist + ' - ' + self.title
 		

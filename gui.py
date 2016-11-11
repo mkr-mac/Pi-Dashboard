@@ -27,17 +27,17 @@ def next_song(songlist, current_song, volume, playing):
 	if current_song == len(songlist):
 		current_song = 0
 	info_bar.set_text(songlist[current_song].infolayout)
-	info_bar.x = 668 - info_bar.width
+	#info_bar.x = 668 - info_bar.width
 	play_action(songlist[current_song].sound, volume, False, not playing)
 	return current_song
 	
-def prev_song(songlist, current_song, volume):
+def prev_song(songlist, current_song, volume, playing):
 	stop_song()
 	if current_song == 0:
 		current_song = len(songlist)						
 	current_song -= 1
 	info_bar.set_text(songlist[current_song].infolayout)
-	info_bar.x = 668 - info_bar.width
+	#info_bar.x = 668 - info_bar.width
 	play_action(songlist[current_song].sound, volume, False, not playing)
 	return current_song
 	
@@ -132,8 +132,8 @@ button3 = Image('LargeButton.png', 24, 296, True, 'to_start')
 song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 
 #The text displays that always show
-info_bar = Text(songlist[current_song].infolayout, 246, 400, 'DS-DIGI.TTF', 52, (255,184,0))
-info_bar.x = 668 - info_bar.width
+info_bar = Text(songlist[current_song].infolayout, 242, 400, 'DS-DIGI.TTF', 52, (255,184,0), 426, True)
+#info_bar.x = 668 - info_bar.width
 digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
 song_time = Text('0:00', 242, 451, 'DS-DIGI.TTF', 28, (255,184,0))
 
@@ -165,7 +165,7 @@ while True:
 		chour = str(now.hour)
 	digital_clock.set_text(chour + ':' + strftime('%M'))
 	#Right aligned
-	digital_clock.x = 794 - digital_clock.width
+	#digital_clock.x = 794 - digital_clock.width
 	
 	tracker_time = pygame.mixer.music.get_pos()
 	if tracker_time == -1:
