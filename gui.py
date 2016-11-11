@@ -32,9 +32,37 @@ def next_song(songlist, current_song, volume):
 	pygame.mixer.music.set_volume(volume/30.0)
 	pygame.mixer.music.play()
 	return current_song
+	
+def prev_song(songlist, current_song, volume):
+	stop_song()
+	if current_song == 0:
+		current_song = len(songlist)						
+	current_song -= 1
+	info_bar.set_text(songlist[current_song].infolayout)
+	info_bar.x = 668 - info_bar.width
+	pygame.mixer.music.load(songlist[current_song].sound)
+	pygame.mixer.music.set_volume(volume/30.0)
+	pygame.mixer.music.play()
+	return current_song
+	
+def pause_song():
+	pygame.mixer.music.pause()
+	return True
 
 def stop_song():
 	pygame.mixer.music.stop()
+
+def volume_up(volume):
+	if volume < 30.0:
+		volume += 1.0
+		pygame.mixer.music.set_volume(volume/30.0)
+	return volume
+
+def volume_down(volume):
+	if volume > 0.0:
+		volume -= 1.0
+		pygame.mixer.music.set_volume(volume/30.0)
+	return volume
 
 """UNUSED
 def rot_center(image, angle):
@@ -173,7 +201,6 @@ while True:
 		for obj in current:
 			if obj.clickable and obj.checkclick(mousex, mousey):
 				action = obj.action
-				#Change things to function calls
 				if action == 'play_song':
 					music_paused = play_button(songlist[current_song].sound, volume, music_paused)
 				elif action == 'stop_song':
@@ -181,26 +208,13 @@ while True:
 				elif action == 'next_song':
 					current_song = next_song(songlist, current_song, volume)
 				elif action == 'previous_song':
-					pygame.mixer.music.stop()
-					if current_song == 0:
-						current_song = len(songlist)						
-					current_song -= 1
-					info_bar.set_text(songlist[current_song].infolayout)
-					info_bar.x = 668 - info_bar.width
-					pygame.mixer.music.load(songlist[current_song].sound)
-					pygame.mixer.music.set_volume(volume/30.0)
-					pygame.mixer.music.play()
+					current_song = prev_song(songlist, current_song, volume)
 				elif action == 'pause_song':
-					pygame.mixer.music.pause()
-					music_paused = True
+					music_paused = pause_song()
 				elif action == 'volume_up':
-					if volume < 30.0:
-						volume += 1.0
-						pygame.mixer.music.set_volume(volume/30.0)
+					volume = volume_up(volume)
 				elif action == 'volume_down':
-					if volume > 0.0:
-						volume -= 1.0
-						pygame.mixer.music.set_volume(volume/30.0)
+					volume = volume_down(volume)
 				
 	mouseclicked = False
 	pygame.display.update()
