@@ -11,26 +11,24 @@ def quit():
 	pygame.quit()
 	sys.exit()
 
-def play_button(song, volume, paused):
+def play_action(song, volume, paused, playing):
 	if paused:
 		pygame.mixer.music.unpause()
-		paused = False
-	else:
+	elif not playing:
 		pygame.mixer.music.stop()
 		pygame.mixer.music.load(song)
 		pygame.mixer.music.set_volume(volume/30.0)
 		pygame.mixer.music.play()
+	return False
 
-def next_song(songlist, current_song, volume):
+def next_song(songlist, current_song, volume, playing):
 	stop_song()
 	current_song += 1
 	if current_song == len(songlist):
 		current_song = 0
 	info_bar.set_text(songlist[current_song].infolayout)
 	info_bar.x = 668 - info_bar.width
-	pygame.mixer.music.load(songlist[current_song].sound)
-	pygame.mixer.music.set_volume(volume/30.0)
-	pygame.mixer.music.play()
+	play_action(songlist[current_song].sound, volume, False, not playing)
 	return current_song
 	
 def prev_song(songlist, current_song, volume):
@@ -40,14 +38,14 @@ def prev_song(songlist, current_song, volume):
 	current_song -= 1
 	info_bar.set_text(songlist[current_song].infolayout)
 	info_bar.x = 668 - info_bar.width
-	pygame.mixer.music.load(songlist[current_song].sound)
-	pygame.mixer.music.set_volume(volume/30.0)
-	pygame.mixer.music.play()
+	play_action(songlist[current_song].sound, volume, False, not playing)
 	return current_song
 	
-def pause_song():
-	pygame.mixer.music.pause()
-	return True
+def pause_song(playing):
+	if playing:
+		pygame.mixer.music.pause()
+		return True
+	return False
 
 def stop_song():
 	pygame.mixer.music.stop()
@@ -157,6 +155,7 @@ mouseclicked = False
 
 """The main loop"""
 while True:
+	#Update the clock
 	now = datetime.now()
 	if now.hour > 12:
 		chour = str(now.hour-12)
@@ -165,13 +164,20 @@ while True:
 	else:
 		chour = str(now.hour)
 	digital_clock.set_text(chour + ':' + strftime('%M'))
+	#Right aligned
 	digital_clock.x = 794 - digital_clock.width
+	
 	tracker_time = pygame.mixer.music.get_pos()
-	if tracker_time/1000%60<10:
+	if tracker_time == -1:
+		song_time.set_text("0:00")
+	elif tracker_time/1000%60<10:
 		song_time.set_text(str(tracker_time/60000)+":0"+str(tracker_time/1000%60))
 	else:
 		song_time.set_text(str(tracker_time/60000)+":"+str(tracker_time/1000%60))
 	
+	music_playing = pygame.mixer.music.get_busy()
+	
+	#Draw all the objects in the current layout
 	for obj in current:
 		obj.draw(DS)
 	
@@ -202,15 +208,15 @@ while True:
 			if obj.clickable and obj.checkclick(mousex, mousey):
 				action = obj.action
 				if action == 'play_song':
-					music_paused = play_button(songlist[current_song].sound, volume, music_paused)
+					music_paused = play_action(songlist[current_song].sound, volume, music_paused, music_playing)
 				elif action == 'stop_song':
 					stop_song()
 				elif action == 'next_song':
-					current_song = next_song(songlist, current_song, volume)
+					current_song = next_song(songlist, current_song, volume, music_playing)
 				elif action == 'previous_song':
-					current_song = prev_song(songlist, current_song, volume)
+					current_song = prev_song(songlist, current_song, volume, music_playing)
 				elif action == 'pause_song':
-					music_paused = pause_song()
+					music_paused = pause_song(music_playing)
 				elif action == 'volume_up':
 					volume = volume_up(volume)
 				elif action == 'volume_down':
