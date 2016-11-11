@@ -11,15 +11,28 @@ def quit():
 	pygame.quit()
 	sys.exit()
 
-def play_song():
-	pygame.mixer.music.stop()
-	pygame.mixer.music.load(songlist[current_song])
-	pygame.mixer.music.play()
+def play_button(song, volume, paused):
+	if paused:
+		pygame.mixer.music.unpause()
+		paused = False
+	else:
+		pygame.mixer.music.stop()
+		pygame.mixer.music.load(song)
+		pygame.mixer.music.set_volume(volume/30.0)
+		pygame.mixer.music.play()
 
-def set_current_song(song):
-	current_song = song
-	return ''
-	
+def next_song(songlist, current_song, volume):
+	stop_song()
+	current_song += 1
+	if current_song == len(songlist):
+		current_song = 0
+	info_bar.set_text(songlist[current_song].infolayout)
+	info_bar.x = 668 - info_bar.width
+	pygame.mixer.music.load(songlist[current_song].sound)
+	pygame.mixer.music.set_volume(volume/30.0)
+	pygame.mixer.music.play()
+	return current_song
+
 def stop_song():
 	pygame.mixer.music.stop()
 
@@ -162,26 +175,11 @@ while True:
 				action = obj.action
 				#Change things to function calls
 				if action == 'play_song':
-					if music_paused:
-						pygame.mixer.music.unpause()
-						music_paused = False
-					else:
-						pygame.mixer.music.stop()
-						pygame.mixer.music.load(songlist[current_song].sound)
-						pygame.mixer.music.set_volume(volume/30.0)
-						pygame.mixer.music.play()
+					music_paused = play_button(songlist[current_song].sound, volume, music_paused)
 				elif action == 'stop_song':
-					pygame.mixer.music.stop()
+					stop_song()
 				elif action == 'next_song':
-					pygame.mixer.music.stop()
-					current_song += 1
-					if current_song == len(songlist):
-						current_song = 0
-					info_bar.set_text(songlist[current_song].infolayout)
-					info_bar.x = 668 - info_bar.width
-					pygame.mixer.music.load(songlist[current_song].sound)
-					pygame.mixer.music.set_volume(volume/30.0)
-					pygame.mixer.music.play()
+					current_song = next_song(songlist, current_song, volume)
 				elif action == 'previous_song':
 					pygame.mixer.music.stop()
 					if current_song == 0:
