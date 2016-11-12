@@ -174,7 +174,7 @@ while True:
 	else:
 		song_time.set_text(str(tracker_time/60000)+":"+str(tracker_time/1000%60))
 		
-	song_time.x = 292 + song_time.size*((tracker_time+1)/600000)
+	song_time.x = 292 + .5 * song_time.size*((tracker_time+1)/600000)
 	music_playing = pygame.mixer.music.get_busy()
 	
 	##Draw all the objects in the current layout
