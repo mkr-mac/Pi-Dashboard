@@ -49,7 +49,7 @@ class Text:
 				DS.blit(self.render, ((self.x+i*self.size*.5),self.y))
 				i+=.5
 			elif chr is '1':
-				DS.blit(self.render, ((self.x+i*self.size*.5)+self.size*.3,self.y))
+				DS.blit(self.render, ((self.x+i*self.size*.5)+self.size*.27,self.y))
 				i+=1
 			else:
 				DS.blit(self.render, (self.x+i*self.size*.5,self.y))

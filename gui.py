@@ -133,11 +133,10 @@ song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 
 #The text displays that always show
 info_bar = Text(songlist[current_song].infolayout, 242, 400, 'DS-DIGI.TTF', 52, (255,184,0), 426, True)
-#info_bar.x = 668 - info_bar.width
-digital_clock = Text((strftime('%I')+':'+strftime('%M')), 680, 411, 'DS-DIGI.TTF', 60, (255,184,0))
+digital_clock = Text((strftime('%I')+':'+strftime('%M')), 662, 411, 'DS-DIGI.TTF', 60, (255,184,0))
 song_time = Text('0:00', 242, 451, 'DS-DIGI.TTF', 28, (255,184,0))
 
-#The various lists of objects that make up the screens that can be loaded
+##The various lists of objects that make up the screens that can be loaded
 #These can be added together to easily combine screens/reduce redundancy
 #example: current = always_up + media
 always_up = [background, vol_up, vol_down, skip_back, skip_fwd, 
@@ -163,9 +162,9 @@ while True:
 		chour = '12'
 	else:
 		chour = str(now.hour)
+	if int(chour) < 10:
+		chour = ' ' + chour
 	digital_clock.set_text(chour + ':' + strftime('%M'))
-	#Right aligned
-	#digital_clock.x = 794 - digital_clock.width
 	
 	tracker_time = pygame.mixer.music.get_pos()
 	if tracker_time == -1:
@@ -174,14 +173,15 @@ while True:
 		song_time.set_text(str(tracker_time/60000)+":0"+str(tracker_time/1000%60))
 	else:
 		song_time.set_text(str(tracker_time/60000)+":"+str(tracker_time/1000%60))
-	
+		
+	song_time.x = 340 - song_time.width
 	music_playing = pygame.mixer.music.get_busy()
 	
-	#Draw all the objects in the current layout
+	##Draw all the objects in the current layout
 	for obj in current:
 		obj.draw(DS)
 	
-	#Drawing the volume bars
+	##Drawing the volume bars
 	if volume>0:
 		for n in range(int(volume)):
 			if n<10:
@@ -191,6 +191,7 @@ while True:
 			else:
 				DS.blit(vol_bar_red, (15,(-10*n)+346))
 	
+	##Checking for mouse/touch events
 	for event in pygame.event.get():
 		if event.type == QUIT:
 			quit()
@@ -201,8 +202,7 @@ while True:
 		elif event.type == MOUSEBUTTONUP:
 			mouseclicked = False
 	
-	#Actions on click
-	#Really needs cleaned up
+	##Actions on click
 	if mouseclicked == True:
 		for obj in current:
 			if obj.clickable and obj.checkclick(mousex, mousey):
