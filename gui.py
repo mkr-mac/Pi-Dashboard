@@ -31,14 +31,17 @@ def next_song(songlist, current_song, volume, playing):
 	play_action(songlist[current_song].sound, volume, False, not playing)
 	return current_song
 	
-def prev_song(songlist, current_song, volume, playing):
-	stop_song()
-	if current_song == 0:
-		current_song = len(songlist)						
-	current_song -= 1
-	info_bar.set_text(songlist[current_song].infolayout)
-	#info_bar.x = 668 - info_bar.width
-	play_action(songlist[current_song].sound, volume, False, not playing)
+def prev_song(songlist, current_song, tracker_time, volume, playing):
+	if tracker_time > 3000 and playing:
+		play_action(songlist[current_song].sound, volume, False, False)
+	else:
+		stop_song()
+		if current_song == 0:
+			current_song = len(songlist)						
+		current_song -= 1
+		info_bar.set_text(songlist[current_song].infolayout)
+		#info_bar.x = 668 - info_bar.width
+		play_action(songlist[current_song].sound, volume, False, not playing)
 	return current_song
 	
 def pause_song(playing):
@@ -80,6 +83,7 @@ def getsonglist():
 			end = file.endswith
 			if end(".mp3") or end(".wav") or end(".flac") or end(".ogg"):
 				songs.append(Sound(os.path.join(root, file)))
+	songs.sort(key=lambda x: x.title)
 	return songs
 	#TODO: organize/sort songs
 	#return sorted(songs, key=str.lower)
@@ -214,7 +218,7 @@ while True:
 				elif action == 'next_song':
 					current_song = next_song(songlist, current_song, volume, music_playing)
 				elif action == 'previous_song':
-					current_song = prev_song(songlist, current_song, volume, music_playing)
+					current_song = prev_song(songlist, current_song, tracker_time, volume, music_playing)
 				elif action == 'pause_song':
 					music_paused = pause_song(music_playing)
 				elif action == 'volume_up':
