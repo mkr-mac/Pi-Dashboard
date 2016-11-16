@@ -83,10 +83,8 @@ def getsonglist():
 			end = file.endswith
 			if end(".mp3") or end(".wav") or end(".flac") or end(".ogg"):
 				songs.append(Sound(os.path.join(root, file)))
-	songs.sort(key=lambda x: x.title)
+	songs.sort(key=lambda x: x.title.lower())
 	return songs
-	#TODO: organize/sort songs
-	#return sorted(songs, key=str.lower)
 
 #Screen size constants
 SCREENWIDTH = 800
@@ -133,6 +131,7 @@ media = Image('MediaButton.png', 24, 112, True, 'to_media')
 button = Image('LargeButton.png', 24, 204, True, 'quit')
 button2 = Image('LargeButton.png', 24, 296)
 button3 = Image('LargeButton.png', 24, 296, True, 'to_start')
+tracker = Image('Tab.png', 346, 448)
 song_scroller = ScrollingList(songlist, 500, 100, 200, 200, 3)
 
 #The text displays that always show
@@ -144,7 +143,7 @@ song_time = Text('0:00', 242, 451, 'DS-DIGI.TTF', 28, (255,184,0))
 #These can be added together to easily combine screens/reduce redundancy
 #example: current = always_up + media
 always_up = [background, vol_up, vol_down, skip_back, skip_fwd, 
-				play, pause, stop, digital_clock, info_bar, song_time]
+				play, pause, stop, digital_clock, info_bar, song_time, tracker]
 start = [media, button, button2]
 media = [button, button3]
 #All items in this list will be drawn
@@ -171,6 +170,7 @@ while True:
 	digital_clock.set_text(chour + ':' + strftime('%M'))
 	
 	tracker_time = pygame.mixer.music.get_pos()
+	tracker.x = 346 + 300*(tracker_time/(songlist[current_song].length * 1000))
 	if tracker_time == -1:
 		song_time.set_text("0:00")
 	elif tracker_time/1000%60<10:

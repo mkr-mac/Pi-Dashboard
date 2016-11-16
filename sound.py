@@ -1,4 +1,4 @@
-import os
+import os, pygame
 from mutagen.flac import FLAC
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, ID3NoHeaderError, TIT2, TALB, TPE1, TPE2, COMM, USLT, TCOM, TCON, TDRC
@@ -7,8 +7,12 @@ from mutagen.easyid3 import EasyID3
 class Sound:
 	def __init__(self, sound):
 		self.sound = sound
+		if sound.endswith(".mp3"):
+			self.length = MP3(sound).info.length
+		else:
+			self.length = pygame.mixer.Sound(sound).get_length()
+		print self.length
 		self.path, self.filename = os.path.split(sound)
-		
 		try: 
 			self.soundID3 = ID3(sound)
 		except ID3NoHeaderError:
@@ -16,7 +20,7 @@ class Sound:
 		try:
 			self.title = str(self.soundID3["TIT2"])
 		except KeyError:
-			self.title = '' + self.filename
+			self.title = str(self.filename)
 		try:
 			self.album = str(self.soundID3["TALB"])
 		except KeyError:
