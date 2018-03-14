@@ -1,4 +1,6 @@
 import sys, pygame, random, os
+from image import DashImage
+from PIL import Image
 from time import strftime, gmtime, time
 from datetime import datetime
 
@@ -38,3 +40,10 @@ def get_clock_time():
     chour = ' ' + chour
 
   return(chour + ':' + strftime('%M'))
+
+def resize_image(dashimage, size_x, size_y):
+  img = Image.open(dashimage.url)
+  result_img = img.resize((size_x, size_y), Image.ANTIALIAS)
+  result_img.save(os.path.join("Images", "temp.jpg"))
+  img.close()
+  dashimage.change_pic(os.path.join("Images", "temp.jpg"))

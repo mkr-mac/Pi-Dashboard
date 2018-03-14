@@ -1,7 +1,6 @@
 import sys, pygame, random, os
 from time import strftime, gmtime
 from sound import Sound
-from image import Image
 from text import Text
 from scrolling_list import ScrollingList
 from pygame.locals import *
@@ -18,6 +17,7 @@ SCREENHEIGHT = 480
 FULLSCREEN = False
 
 #Start Pygame
+pygame.mixer.pre_init(44100, 16, 2, 4096)
 pygame.init()
 FPS = 60.0
 fpsClock  = pygame.time.Clock()
@@ -133,14 +133,16 @@ while True:
         elif action == 'to_media':
           current_scene += media
         elif action[0:16] == 'set_current_song':
-          print('Hey')
           tracker_time = 0
           current_song = next_song(songlist, int(action[-7:])-1, volume, music_playing)
           info_bar.set_text(songlist[current_song].infolayout)
           if songlist[current_song].album_art:
-            with open('album.jpg', 'w') as img:
+            with open(os.path.join('Images','album.jpg'), 'w') as img:
+              img.truncate()
               img.write(songlist[current_song].album_art)
-          apic.change_pic('album.jpg')
+
+            apic.change_pic(os.path.join('Images','album.jpg'))
+            resize_image(apic, 100, 100)
 
         else:
           print("Unsupported action: " + action)

@@ -1,11 +1,13 @@
 import pygame, os
 from pygame.locals import *
+from PIL import Image
 
-class Image:
+class DashImage:
   def __init__(self, image, x, y, clickable = False, action = None):
     self.x = x
     self.y = y
     self.coords = (x,y)
+    self.url = os.path.join("Images", image)
     self.image = pygame.image.load(os.path.join("Images", image))
     self.rect = self.image.get_rect()
     self.width = self.image.get_width()

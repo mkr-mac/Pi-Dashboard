@@ -1,5 +1,5 @@
 import sys, pygame, random, os
-from image import Image
+from image import DashImage as Image
 from text import Text
 from music_utils import *
 from scrolling_list import ScrollingList
@@ -25,7 +25,7 @@ tracker = Image('Tab.png', 346, 448)
 tracker_sensor = Image('Tracker Sensor.png', 353, 447, True, 'to_song_position')
 songlist = getsonglist()
 song_scroller = ScrollingList(songlist, 400, 0, 200, 200, 10)
-apic = Image('album.jpg', 200, 200)
+apic = Image('album.png', 125, 25)
 
 #Right-side buttons
 media_button = Image('Media.png', 700, 0, True, 'to_media')
@@ -48,3 +48,11 @@ always_up = [background, vol_up, vol_down, skip_back, skip_fwd,
         games_button, diagnostics_button, settings_button]
 
 media = [song_scroller, apic]
+
+current_scene = always_up
+
+def get_current_scene():
+  return always_up
+
+def set_current_scene(scene):
+  return always_up

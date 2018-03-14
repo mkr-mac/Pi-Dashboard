@@ -55,10 +55,12 @@ class Sound:
       self.track_number = ''
     try:
       file = File(self.sound) # mutagen can automatically detect format and type of tags
-      self.album_art = str(file.tags['APIC:'].data).splitlines() # access APIC frame and grab the image
-      print(self.album_art)
+      self.album_art = str(file.tags['APIC:'].data) # access APIC frame and grab the image
+      print(self.album_art[-128:])
     except:
       self.album_art = False
 
     self.infolayout = '    '+ self.title
-    
+
+  def print_info(self):
+    print(self.soundID3)
